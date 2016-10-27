@@ -1,0 +1,56 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.1.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd ">
+
+<!-- 配置SqlSessionFactory -->
+<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<!-- 数据源 -->
+	<property name="dataSource" ref="dataSource"/>
+	<!-- 配置SqlMapConfig.xml -->
+	<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"/>
+</bean>
+
+<!-- 配置userDao -->
+<!-- <bean id="userDao" class="cn.itcast.ssm.dao.old.UserDaoImpl">
+	注入会话工厂
+	<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"/>
+</bean> -->
+
+
+<!-- mapper动态代理 -->
+<!-- 配置userMapper
+MapperFactoryBean：用于生成 代理对象
+ -->
+<!-- <bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+   注入会话工厂
+	<property name="sqlSessionFactory" ref="sqlSessionFactoryBean"/>
+	mapper接口
+	<property name="mapperInterface" value="cn.itcast.ssm.dao.mapper.UserMapper"/>
+</bean> -->
+
+<!-- 使用mapper批量扫描器扫描mapper接口
+规则：mapper.xml和mapper.java在一个目录 且同名即可 
+扫描出来mapper，自动让spring容器注册，bean的id就是mapper类名(首字母小写)
+ -->
+<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	<!-- 会话工厂 -->
+	<property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
+  <!-- 扫描包路径 
+  多个包中间用半角逗号分隔
+   -->
+	<property name="basePackage" value="cn.itcast.ssm.dao.mapper"/>
+</bean>
+
+
+</beans>
